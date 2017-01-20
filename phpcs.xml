@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Watcher coding standard">
+    <description>Watcher coding standard</description>
+
+    <!-- display progress and sniff -->
+    <arg value="p"/>
+    <arg value="s"/>
+
+    <!-- use colors in output -->
+    <arg name="colors"/>
+
+    <!-- inherit rules from: -->
+    <rule ref="PSR2"/>
+
+    <!-- Paths and file to check -->
+    <file>src</file>
+</ruleset>

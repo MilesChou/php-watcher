@@ -1,0 +1,26 @@
+{
+    "name": "mileschou/watcher",
+    "description": "A simple watcher library written by PHP.",
+    "type": "library",
+    "license": "MIT License",
+    "authors": [
+        {
+            "name": "MilesChou",
+            "email": "jangconan@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "MilesChou\\Watcher\\": "src"
+        }
+    },
+    "scripts": {
+        "test": [
+            "php vendor/bin/phpcs"
+        ]
+    }
+}
