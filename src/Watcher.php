@@ -1,7 +1,10 @@
 <?php
 namespace Watcher;
 
+use ArrayObject;
+use Closure;
 use Watcher\Exception\FileNotFoundException;
+use Watcher\Exception\InvalidContainerException;
 
 /**
  * Watcher Class
@@ -13,7 +16,12 @@ class Watcher
     /**
      * @var array
      */
-    private $fileList = [];
+    private $files = [];
+
+    /**
+     * @var ArrayObject|mixed
+     */
+    private $container;
 
     /**
      * @var array
@@ -44,6 +52,22 @@ class Watcher
     }
 
     /**
+     * @param array|ArrayObject $container
+     */
+    public function __construct($container = [])
+    {
+        if (!is_object($container) && !is_array($container)) {
+            throw new InvalidContainerException('Container parameter is invalid, please use array / object type');
+        }
+
+        if (is_array($container)) {
+            $container = new ArrayObject($container);
+        }
+
+        $this->container = $container;
+    }
+
+    /**
      * @param string $file
      */
     public function addFile($file)
@@ -56,7 +80,7 @@ class Watcher
             throw new FileNotFoundException("$file is not found.");
         }
 
-        $this->fileList[] = $file;
+        $this->files[] = $file;
     }
 
     /**
@@ -70,23 +94,51 @@ class Watcher
     }
 
     /**
+     * @return ArrayObject|mixed
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Show file
+     *
+     * @param callable $callable
+     */
+    public function show(callable $callable)
+    {
+        if ($callable instanceof Closure) {
+            $callable = $callable->bindTo($this->container);
+        }
+
+        foreach ($this->files as $file) {
+            $callable($file);
+        }
+    }
+
+    /**
      * Run watch
      *
-     * @param callable $callback
+     * @param callable $callable
      */
-    public function watch(callable $callback)
+    public function watch(callable $callable)
     {
-        // Initial callback state
-        foreach ($this->fileList as $file) {
-            $callback($file, true);
+        if ($callable instanceof Closure) {
+            $callable = $callable->bindTo($this->container);
+        }
+
+        // Initial callable state
+        foreach ($this->files as $file) {
+            $callable($file, true);
         }
 
         while (1) {
             clearstatcache();
 
-            foreach ($this->fileList as $file) {
+            foreach ($this->files as $file) {
                 if ($this->isChange($file)) {
-                    $callback($file);
+                    $callable($file);
                 }
 
                 $this->updateModifyTime($file);

@@ -12,6 +12,7 @@ before_script:
 
 script:
   - php vendor/bin/phpcs
+  - php vendor/bin/phpunit
 
 cache:
   directories:

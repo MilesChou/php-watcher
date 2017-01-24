@@ -12,7 +12,9 @@ Install using Composer
 $ composer require mileschou/watcher
 ```
 
-And write the code
+### Watch file
+
+Example of watch file
 
 ```php
 <?php
@@ -28,5 +30,65 @@ $watcher->watch(function($file, $isInit) {
     }
     
     echo $file . ' is Changed';
+});
+```
+
+### Show file
+
+Example of show file. It's just run one time.
+
+```php
+<?php
+
+use Watcher\Watcher;
+
+$watcher = new Watcher();
+$watcher->addFile('/path/to/file');
+
+$watcher->show(function($file) {
+    echo 'Show ' . $file;
+});
+```
+
+### Container
+
+You can using simple container, default will trans to ArrayObject
+ 
+```php
+<?php
+
+use Watcher\Watcher;
+
+$container = ['something'];
+
+$watcher = new Watcher($container);
+$watcher->addFile('/path/to/file');
+
+$watcher->show(function($file) {
+    /** @var ArrayObject $this */
+    $data = $this->getArrayCopy();
+    
+    echo 'Container data is ' . $data[0]; // Will see 'something'
+});
+```
+
+Or using other container library.
+ 
+```php
+<?php
+
+use Watcher\Watcher;
+
+$container = new \Pimple\Container();
+$container['some-key'] = 'some-value';
+
+$watcher = new Watcher($container);
+$watcher->addFile('/path/to/file');
+
+$watcher->show(function($file) {
+    /** @var \Pimple\Container $this */
+    $data = $this['some-key'];
+    
+    echo 'Pimple container data is ' . $data; // Will see 'some-value'
 });
 ```

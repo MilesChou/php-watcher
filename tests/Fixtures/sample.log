@@ -1,0 +1,8 @@
+[2017-01-01 12:00:00] command.DEBUG: Something happened [] []
+[2017-01-01 12:00:00] command.INFO: Something happened [] []
+[2017-01-01 12:00:00] command.NOTICE: Something happened [] []
+[2017-01-01 12:00:00] command.WARNING: Something happened [] []
+[2017-01-01 12:00:00] command.ERROR: Something happened [] []
+[2017-01-01 12:00:00] command.CRITICAL: Something happened [] []
+[2017-01-01 12:00:00] command.ALERT: Something happened [] []
+[2017-01-01 12:00:00] command.EMERGENCY: Something happened [] []
