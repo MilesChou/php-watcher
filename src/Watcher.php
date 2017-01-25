@@ -3,7 +3,7 @@ namespace Watcher;
 
 use ArrayObject;
 use Closure;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
@@ -16,6 +16,8 @@ use Watcher\Util\System;
  */
 class Watcher
 {
+    use LoggerAwareTrait;
+
     /**
      * @var array
      */
@@ -25,11 +27,6 @@ class Watcher
      * @var ArrayObject|mixed
      */
     private $container;
-
-    /**
-     * @var null|LoggerInterface
-     */
-    private $logger = null;
 
     /**
      * @var array
@@ -102,10 +99,13 @@ class Watcher
     public function run(callable $callable)
     {
         if ($callable instanceof Closure) {
+            $this->log(LogLevel::INFO, 'Bind container to callable');
             $callable = $callable->bindTo($this->container);
         }
 
+        $this->log(LogLevel::INFO, 'Run once time');
         foreach ($this->files as $alias => $file) {
+            $this->log(LogLevel::INFO, "Do callable by $file");
             $callable($alias, $file);
         }
     }
@@ -135,14 +135,6 @@ class Watcher
         foreach ($files as $alias => $file) {
             $this->setFile($alias, $file);
         }
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
