@@ -3,6 +3,8 @@ namespace Watcher;
 
 use ArrayObject;
 use Closure;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
 
@@ -24,9 +26,25 @@ class Watcher
     private $container;
 
     /**
+     * @var null|LoggerInterface
+     */
+    private $logger = null;
+
+    /**
      * @var array
      */
     private $modifyTime = [];
+
+    /**
+     * @param $level
+     * @param $msg
+     */
+    private function log($level, $msg)
+    {
+        if (null !== $this->logger) {
+            $this->logger->log($level, $msg);
+        }
+    }
 
     /**
      * @param string $file
@@ -68,6 +86,30 @@ class Watcher
     }
 
     /**
+     * @return ArrayObject|mixed
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Run once
+     *
+     * @param callable $callable
+     */
+    public function run(callable $callable)
+    {
+        if ($callable instanceof Closure) {
+            $callable = $callable->bindTo($this->container);
+        }
+
+        foreach ($this->files as $alias => $file) {
+            $callable($alias, $file);
+        }
+    }
+
+    /**
      * @param string $alias
      * @param string $file
      */
@@ -95,27 +137,11 @@ class Watcher
     }
 
     /**
-     * @return ArrayObject|mixed
+     * @param LoggerInterface $logger
      */
-    public function getContainer()
+    public function setLogger($logger)
     {
-        return $this->container;
-    }
-
-    /**
-     * Run once
-     *
-     * @param callable $callable
-     */
-    public function run(callable $callable)
-    {
-        if ($callable instanceof Closure) {
-            $callable = $callable->bindTo($this->container);
-        }
-
-        foreach ($this->files as $alias => $file) {
-            $callable($alias, $file);
-        }
+        $this->logger = $logger;
     }
 
     /**
@@ -126,19 +152,23 @@ class Watcher
     public function watch(callable $callable)
     {
         if ($callable instanceof Closure) {
+            $this->log(LogLevel::INFO, 'Bind container to callable');
             $callable = $callable->bindTo($this->container);
         }
 
-        // Initial callable state
+        $this->log(LogLevel::INFO, 'Initial callable state');
         foreach ($this->files as $alias => $file) {
             $callable($alias, $file, true);
         }
 
+        $this->log(LogLevel::INFO, 'Start loop');
         while (1) {
+            $this->log(LogLevel::DEBUG, "Clear file cache");
             clearstatcache();
 
             foreach ($this->files as $alias => $file) {
                 if ($this->isChange($file)) {
+                    $this->log(LogLevel::INFO, "$file is changed, do callable");
                     $callable($alias, $file);
                 }
 
