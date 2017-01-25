@@ -3,25 +3,22 @@ namespace Watcher;
 
 use ArrayObject;
 use Closure;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LogLevel;
 use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
 use Watcher\Logging\LoggerAwareTrait;
-use Watcher\Util\System;
+use Watcher\Strategy\FileSystem;
+use Watcher\Strategy\StrategyInterface;
 
 /**
  * Watcher Class
  *
  * @author MilesChou <jangconan@gmail.com>
  */
-class Watcher
+class Watcher implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @var array
-     */
-    private $files = [];
 
     /**
      * @var ArrayObject|mixed
@@ -31,30 +28,12 @@ class Watcher
     /**
      * @var array
      */
-    private $modifyTime = [];
+    private $files = [];
 
     /**
-     * @param string $file
-     * @return bool
+     * @var StrategyInterface
      */
-    private function isChange($file)
-    {
-        if (!isset($this->modifyTime[$file])) {
-            return false;
-        }
-
-        $modifyTime = filemtime($file);
-
-        return $this->modifyTime[$file] !== $modifyTime;
-    }
-
-    /**
-     * @param string $file
-     */
-    private function updateModifyTime($file)
-    {
-        $this->modifyTime[$file] = filemtime($file);
-    }
+    private $strategy;
 
     /**
      * @param array|ArrayObject $container
@@ -78,6 +57,22 @@ class Watcher
     public function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * @return StrategyInterface
+     */
+    public function getStrategy()
+    {
+        if (null === $this->strategy) {
+            $this->strategy = new FileSystem();
+        }
+
+        if (null !== $this->logger) {
+            $this->strategy->setLogger($this->logger);
+        }
+
+        return $this->strategy;
     }
 
     /**
@@ -127,6 +122,14 @@ class Watcher
     }
 
     /**
+     * @param StrategyInterface $strategy
+     */
+    public function setStrategy(StrategyInterface $strategy)
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
      * Run and watch
      *
      * @param callable $callable
@@ -144,20 +147,8 @@ class Watcher
         }
 
         $this->log(LogLevel::INFO, 'Start loop');
-        while (1) {
-            $this->log(LogLevel::DEBUG, "Clear file cache. Memory usage: " . System::getMemoryUsage());
-            clearstatcache();
 
-            foreach ($this->files as $alias => $file) {
-                if ($this->isChange($file)) {
-                    $this->log(LogLevel::INFO, "$file is changed, do callable");
-                    $callable($alias, $file);
-                }
-
-                $this->updateModifyTime($file);
-            }
-
-            sleep(1);
-        }
+        $strategy = $this->getStrategy();
+        $strategy->watch($this->files, $callable);
     }
 }
