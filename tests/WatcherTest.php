@@ -77,15 +77,17 @@ class WatcherTest extends PHPUnit_Framework_TestCase
     public function shouldCanGetFiles_whenShowSomeThing()
     {
         // Arrange
-        $excepted = __DIR__ . '/Fixtures/sample.log';
+        $exceptedFile = __DIR__ . '/Fixtures/sample.log';
+        $exceptedAlias = 'some-alias';
         $container = new ArrayObject();
-        $container->append($excepted);
+        $container->append($exceptedFile);
 
         // Act
         $target = new Watcher($container);
-        $target->setFile('alias', $excepted);
-        $target->run(function ($actual) use ($excepted) {
-            PHPUnit_Framework_TestCase::assertEquals($excepted, $actual);
+        $target->setFile($exceptedAlias, $exceptedFile);
+        $target->run(function ($actualAlias, $actualFile) use ($exceptedAlias, $exceptedFile) {
+            PHPUnit_Framework_TestCase::assertEquals($exceptedFile, $actualFile);
+            PHPUnit_Framework_TestCase::assertEquals($exceptedAlias, $actualAlias);
         });
     }
 
