@@ -10,8 +10,9 @@ namespace Watcher\Handler;
 interface HandlerInterface
 {
     /**
+     * @param $alias
      * @param string $file
      * @param bool $isInit
      */
-    public function invoke($file, $isInit);
+    public function invoke($alias, $file, $isInit);
 }

@@ -83,8 +83,8 @@ class WatcherTest extends PHPUnit_Framework_TestCase
 
         // Act
         $target = new Watcher($container);
-        $target->addFile($excepted);
-        $target->show(function ($actual) use ($excepted) {
+        $target->setFile('alias', $excepted);
+        $target->run(function ($actual) use ($excepted) {
             PHPUnit_Framework_TestCase::assertEquals($excepted, $actual);
         });
     }
@@ -101,8 +101,8 @@ class WatcherTest extends PHPUnit_Framework_TestCase
 
         // Act
         $target = new Watcher($container);
-        $target->addFile(__DIR__ . '/Fixtures/sample.log');
-        $target->show(function () use ($excepted) {
+        $target->setFile('alias', __DIR__ . '/Fixtures/sample.log');
+        $target->run(function () use ($excepted) {
             /** @var ArrayObject $this */
             $data = $this->getArrayCopy();
             $actual = $data[0];
@@ -123,8 +123,8 @@ class WatcherTest extends PHPUnit_Framework_TestCase
 
         // Act
         $target = new Watcher($container);
-        $target->addFile(__DIR__ . '/Fixtures/sample.log');
-        $target->show(function () use ($excepted) {
+        $target->setFile('alias', __DIR__ . '/Fixtures/sample.log');
+        $target->run(function () use ($excepted) {
             /** @var \Pimple\Container $this */
             $actual = $this['some-key'];
 

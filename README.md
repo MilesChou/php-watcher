@@ -22,9 +22,9 @@ Example of watch file
 use Watcher\Watcher;
 
 $watcher = new Watcher();
-$watcher->addFile('/path/to/file');
+$watcher->setFile('file1', '/path/to/file');
 
-$watcher->watch(function($file, $isInit) {
+$watcher->watch(function($alias, $file, $isInit) {
     if ($isInit) {
         return;
     }
@@ -33,9 +33,9 @@ $watcher->watch(function($file, $isInit) {
 });
 ```
 
-### Show file
+### Run once
 
-Example of show file. It's just run one time.
+Example of run one time.
 
 ```php
 <?php
@@ -43,9 +43,9 @@ Example of show file. It's just run one time.
 use Watcher\Watcher;
 
 $watcher = new Watcher();
-$watcher->addFile('/path/to/file');
+$watcher->setFile('file1', '/path/to/file');
 
-$watcher->show(function($file) {
+$watcher->run(function($alias, $file) {
     echo 'Show ' . $file;
 });
 ```
@@ -62,9 +62,9 @@ use Watcher\Watcher;
 $container = ['something'];
 
 $watcher = new Watcher($container);
-$watcher->addFile('/path/to/file');
+$watcher->setFile('file1', '/path/to/file');
 
-$watcher->show(function($file) {
+$watcher->run(function($alias, $file) {
     /** @var ArrayObject $this */
     $data = $this->getArrayCopy();
     
@@ -83,9 +83,9 @@ $container = new \Pimple\Container();
 $container['some-key'] = 'some-value';
 
 $watcher = new Watcher($container);
-$watcher->addFile('/path/to/file');
+$watcher->setFile('file1', '/path/to/file');
 
-$watcher->show(function($file) {
+$watcher->run(function($alias, $file) {
     /** @var \Pimple\Container $this */
     $data = $this['some-key'];
     

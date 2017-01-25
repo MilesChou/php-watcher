@@ -68,9 +68,10 @@ class Watcher
     }
 
     /**
+     * @param string $alias
      * @param string $file
      */
-    public function addFile($file)
+    public function setFile($alias, $file)
     {
         if ($file{0} !== '/') {
             $file = getcwd() . '/' . $file;
@@ -80,16 +81,16 @@ class Watcher
             throw new FileNotFoundException("$file is not found.");
         }
 
-        $this->files[] = $file;
+        $this->files[$alias] = $file;
     }
 
     /**
      * @param string[] $files
      */
-    public function addFiles(array $files)
+    public function setFiles(array $files)
     {
-        foreach ($files as $file) {
-            $this->addFile($file);
+        foreach ($files as $alias => $file) {
+            $this->setFile($alias, $file);
         }
     }
 
@@ -102,23 +103,23 @@ class Watcher
     }
 
     /**
-     * Show file
+     * Run once
      *
      * @param callable $callable
      */
-    public function show(callable $callable)
+    public function run(callable $callable)
     {
         if ($callable instanceof Closure) {
             $callable = $callable->bindTo($this->container);
         }
 
-        foreach ($this->files as $file) {
-            $callable($file);
+        foreach ($this->files as $alias => $file) {
+            $callable($alias, $file);
         }
     }
 
     /**
-     * Run watch
+     * Run and watch
      *
      * @param callable $callable
      */
@@ -129,16 +130,16 @@ class Watcher
         }
 
         // Initial callable state
-        foreach ($this->files as $file) {
-            $callable($file, true);
+        foreach ($this->files as $alias => $file) {
+            $callable($alias, $file, true);
         }
 
         while (1) {
             clearstatcache();
 
-            foreach ($this->files as $file) {
+            foreach ($this->files as $alias => $file) {
                 if ($this->isChange($file)) {
-                    $callable($file);
+                    $callable($alias, $file);
                 }
 
                 $this->updateModifyTime($file);

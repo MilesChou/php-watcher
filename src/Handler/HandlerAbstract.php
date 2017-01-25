@@ -10,11 +10,12 @@ namespace Watcher\Handler;
 abstract class HandlerAbstract implements HandlerInterface
 {
     /**
+     * @param $alias
      * @param string $file
-     * @param bool $inInit
+     * @param bool $isInit
      */
-    public function __invoke($file, $inInit = false)
+    public function __invoke($alias, $file, $isInit = false)
     {
-        $this->invoke($file, $inInit);
+        $this->invoke($alias, $file, $isInit);
     }
 }
