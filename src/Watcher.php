@@ -3,10 +3,10 @@ namespace Watcher;
 
 use ArrayObject;
 use Closure;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
 use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
+use Watcher\Logging\LoggerAwareTrait;
 use Watcher\Util\System;
 
 /**
@@ -32,17 +32,6 @@ class Watcher
      * @var array
      */
     private $modifyTime = [];
-
-    /**
-     * @param $level
-     * @param $msg
-     */
-    private function log($level, $msg)
-    {
-        if (null !== $this->logger) {
-            $this->logger->log($level, $msg);
-        }
-    }
 
     /**
      * @param string $file
