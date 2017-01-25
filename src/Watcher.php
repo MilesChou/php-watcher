@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
+use Watcher\Util\System;
 
 /**
  * Watcher Class
@@ -163,7 +164,7 @@ class Watcher
 
         $this->log(LogLevel::INFO, 'Start loop');
         while (1) {
-            $this->log(LogLevel::DEBUG, "Clear file cache");
+            $this->log(LogLevel::DEBUG, "Clear file cache. Memory usage: " . System::getMemoryUsage());
             clearstatcache();
 
             foreach ($this->files as $alias => $file) {
