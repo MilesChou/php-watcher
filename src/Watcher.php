@@ -9,7 +9,7 @@ use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
 use Watcher\Logging\LoggerAwareTrait;
 use Watcher\Strategy\FileSystem;
-use Watcher\Strategy\StrategyInterface;
+use Watcher\Strategy\StrategyAbstract;
 
 /**
  * Watcher Class
@@ -31,7 +31,7 @@ class Watcher implements LoggerAwareInterface
     private $files = [];
 
     /**
-     * @var StrategyInterface
+     * @var StrategyAbstract
      */
     private $strategy;
 
@@ -60,7 +60,7 @@ class Watcher implements LoggerAwareInterface
     }
 
     /**
-     * @return StrategyInterface
+     * @return StrategyAbstract
      */
     public function getStrategy()
     {
@@ -122,9 +122,9 @@ class Watcher implements LoggerAwareInterface
     }
 
     /**
-     * @param StrategyInterface $strategy
+     * @param StrategyAbstract $strategy
      */
-    public function setStrategy(StrategyInterface $strategy)
+    public function setStrategy(StrategyAbstract $strategy)
     {
         $this->strategy = $strategy;
     }

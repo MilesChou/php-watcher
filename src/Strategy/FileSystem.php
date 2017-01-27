@@ -4,7 +4,6 @@ namespace Watcher\Strategy;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LogLevel;
-use Watcher\Logging\LoggerAwareTrait;
 use Watcher\Util\System;
 
 /**
@@ -12,10 +11,8 @@ use Watcher\Util\System;
  *
  * @author MilesChou <jangconan@gmail.com>
  */
-class FileSystem implements StrategyInterface, LoggerAwareInterface
+class FileSystem extends StrategyAbstract implements LoggerAwareInterface
 {
-    use LoggerAwareTrait;
-
     /**
      * @var array
      */
