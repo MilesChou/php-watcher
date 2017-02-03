@@ -92,3 +92,25 @@ $watcher->run(function($alias, $file) {
     echo 'Pimple container data is ' . $data; // Will see 'some-value'
 });
 ```
+
+### Strategy
+
+Here are two Strategy can use
+
+```php
+<?php
+
+use Watcher\Strategy;
+use Watcher\Watcher;
+
+// Use inotify extension, it will throw exception if you do not installed
+$strategy = new Strategy\Inotify();
+
+// Use file system 
+$strategy = new Strategy\FileSystem();
+
+$watcher = new Watcher();
+$watcher->setStrategy($strategy);
+```
+
+> I guess that using inotify is faster. Actually, I don't know how to test performance.
