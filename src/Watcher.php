@@ -18,6 +18,8 @@ use Watcher\Strategy\StrategyAbstract;
  */
 class Watcher implements LoggerAwareInterface
 {
+    const VERSION = '0.5.0';
+
     use LoggerAwareTrait;
 
     /**

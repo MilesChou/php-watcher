@@ -18,6 +18,9 @@
         "pimple/pimple": "^3.0",
         "squizlabs/php_codesniffer": "^2.7"
     },
+    "suggest": {
+        "ext-inotify": "Linux kernel subsystem, reports fs changes to applications."
+    },
     "autoload": {
         "psr-4": {
             "Watcher\\": "src"
