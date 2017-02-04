@@ -9,6 +9,7 @@ use Watcher\Exception\FileNotFoundException;
 use Watcher\Exception\InvalidContainerException;
 use Watcher\Logging\LoggerAwareTrait;
 use Watcher\Strategy\FileSystem;
+use Watcher\Strategy\Inotify;
 use Watcher\Strategy\StrategyAbstract;
 
 /**
@@ -67,7 +68,11 @@ class Watcher implements LoggerAwareInterface
     public function getStrategy()
     {
         if (null === $this->strategy) {
-            $this->strategy = new FileSystem();
+            if (function_exists('inotify_init')) {
+                $this->strategy = new Inotify();
+            } else {
+                $this->strategy = new FileSystem();
+            }
         }
 
         if (null !== $this->logger) {
