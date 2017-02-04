@@ -69,8 +69,10 @@ class Watcher implements LoggerAwareInterface
     {
         if (null === $this->strategy) {
             if (function_exists('inotify_init')) {
+                $this->log(LogLevel::INFO, 'Use Strategy\Inotify');
                 $this->strategy = new Inotify();
             } else {
+                $this->log(LogLevel::INFO, 'Use Strategy\FileSystem');
                 $this->strategy = new FileSystem();
             }
         }
