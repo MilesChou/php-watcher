@@ -11,8 +11,12 @@ before_script:
   - composer install
 
 script:
+  - mkdir -p build/logs
   - php vendor/bin/phpcs
-  - php vendor/bin/phpunit
+  - php vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
+
+after_success:
+  - php vendor/bin/codacycoverage clover
 
 cache:
   directories:
