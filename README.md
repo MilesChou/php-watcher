@@ -1,5 +1,6 @@
 # Watcher
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2a71772ce3ce46a4ac56fbdcb54f4796)](https://www.codacy.com/app/MilesChou/php-watcher?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MilesChou/php-watcher&amp;utm_campaign=Badge_Grade)
 [![Travis CI](https://travis-ci.org/MilesChou/php-watcher.svg?branch=master)](https://travis-ci.org/MilesChou/php-watcher)
 
 A simple watcher library written by PHP.
